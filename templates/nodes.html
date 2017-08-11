@@ -100,10 +100,8 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li ><a href="/block">Block<span class="sr-only">(current)</span></a></li>
-          <li><a href="/status">Status</a></li>
-<!--
-          <li><a href="/nodes">Nodes</a></li>
--->
+          <li ><a href="/status">Status</a></li>
+          <li class="active"><a href="/nodes">Nodes</a></li>
         </ul>
         <form class="navbar-form navbar-left">
           <div class="form-group">
@@ -121,50 +119,68 @@
   <div class="col-md-1"></div>
 </div>
 <div class="row">
-  <div class="col-md-1"></div>
-  <div class="col-md-6">
-    <table class="table table-hover">
-      <caption><h2>Latest Blocks</h2></caption>
-      <thead>
-        <tr>
-          <th>Height</th>
-          <th>Age</th>
-          <th>Transactions</th>
-          <th>Mined by</th>
-          <th>Size</th>
-        </tr>
-      </thead>
-      <tbody>
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+          <div class="jumbotron">
+              <h4> 选择Node</h4>
+                  <select class="form-control " style="width:200px;">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                  </select>
+              <h4> 添加Block</h4>
+              <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary " style="width:200px">添加</button>
+          </div>
+        <div class="modal fade "  id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width:400px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                        添加Block
+                        </h4>
+                    </div>
+                    <div class="modal-body" >
+                          <input type="text"  class="form-control" placeholder="Node ID" aria-describedby="basic-addon1">
+                        <p></p>
+                          <input type="text"  class="form-control" placeholder="Message" aria-describedby="basic-addon1">
 
-      </tbody>
-    </table>
-  </div>
-  <div class="col-md-4">
-  <div class="jumbotron">
-  <h2> About WeHealth</h2>
-  <p>  这是一个特别牛逼的基于区块链的公民病例报告</p>
-  <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
-  </div>
-</div>
-  <div class="col-md-1"></div>
-</div>
-<div class="row">
-  <div class="col-md-1"></div>
-  <div class="col-md-6">
-    <table class="table table-hover">
-      <caption><h2>Latest Transactions</h2></caption>
-      <thead>
-        <tr>
-          <th>Transactions</th>
-          <th>Hash</th>
-        </tr>
-      </thead>
-      <tbody>
+                    </div>
 
-      </tbody>
-    </table>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            添加
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <table class="table table-hover">
+          <caption><h2>Blocks</h2></caption>
+          <thead>
+            <tr>
+              <th>Height</th>
+              <th>Age</th>
+              <th>Transactions</th>
+              <th>Mined by</th>
+              <th>Size</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
   </div>
-  <div class="col-md-4"></div>
+
+  <div class="col-md-1"></div>
 </div>
 </body>
 </html>

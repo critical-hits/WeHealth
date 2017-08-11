@@ -1,0 +1,113 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>爬虫监控</title>
+<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='highcharts.js') }}"></script>
+<script src="{{ url_for('static', filename='exporting.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+</head>
+    <body>
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          </button>
+          <a class="navbar-brand" href="#">DashBoard</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+
+            <li  class="active"><a href="/">Overview</a></li>
+            <li ><a href="/stats/total">队列信息</a></li>
+            <!--<li ><a href="/ftp">任务管理</a></li>-->
+            <li ><a href="/rule">爬虫规则</a></li>
+            <li ><a href="/ftp">输入配置</a></li>
+            <li ><a href="/log" >日志信息</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="http://localhost:8088">Hbase管理</a></li>
+              <li><a href="http://localhost:8080">KafkaMonitor</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>IP</th>
+          <th>状态</th>
+          <th>运行时长(Minute)</th>
+          <th>内存(MB)</th>
+          <th>速度(urls/s)</th>
+          <th>详情</th>
+          <th>控制</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in data %}
+      <tr>
+        <th>{{ item.ip }}</th>
+        {% if item.active %}
+        <th><span class="label label-info">运行中</span></th>
+        <th id="time">{{ item.start }}</th>
+        <th>{{ item.mem }} </th>
+        <th>{{ item.speed }} </th>
+        <th><a href="{{ item.stats_href }}">详情</a></th>
+        <th><button type="button" class="btn btn-danger btn-xs" name="{{item.ip}}" onclick="inactive(this.name)">inactive</button></th>
+        {% else %}
+        <th><span class="label label-default">已停止</span></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th><button type="button" name="{{item.ip}}" class="btn btn-success btn-xs" onclick="active(this.name)">active</button></th>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-1"></div>
+
+</div>
+    <script>
+      var now  = Date.parse(new Date())/1000;
+      var start=parseInt($("#time").text())
+      $("#time").text(parseInt((now-start)/60))
+      console.log(now-start)
+      console.log(now)
+      console.log(start)
+
+    </script>
+    <script>
+      function inactive(ip){
+            $.ajax({
+              url:"/inactive",
+              type:"post",
+              data:{ip:ip},
+              dataType:"json",
+              success: function(){
+                  window.location.reload()
+              }
+            });
+      }
+      function active(ip){
+            $.ajax({
+              url:"/active",
+              type:"post",
+              data:{ip:ip},
+              dataType:"json",
+              success: function(){
+                  window.location.reload()
+              }
+            });
+      }
+
+    </script>
+</body>
+</html>

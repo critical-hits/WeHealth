@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WeHealth</title>
+</head>
+<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='highcharts.js') }}"></script>
+<script src="{{ url_for('static', filename='exporting.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='echarts.min.js') }}"></script>
+<style>
+  .navbar-default {
+  background-color: #2053a6;
+  border-color: #5a6ad8;
+}
+.navbar-default .navbar-brand {
+  color: #ecf0f1;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  color: #ecdbff;
+}
+.navbar-default .navbar-text {
+  color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #ecdbff;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: #ecdbff;
+  background-color: #5a6ad8;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  color: #ecdbff;
+  background-color: #5a6ad8;
+}
+.navbar-default .navbar-toggle {
+  border-color: #5a6ad8;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+  background-color: #5a6ad8;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #ecf0f1;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+  border-color: #ecf0f1;
+}
+.navbar-default .navbar-link {
+  color: #ecf0f1;
+}
+.navbar-default .navbar-link:hover {
+  color: #ecdbff;
+}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #ecf0f1;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ecdbff;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ecdbff;
+    background-color: #5a6ad8;
+  }
+}
+</style>
+<body>
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+  <nav class="navbar navbar-default ">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">WeHealth</a>
+      </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li ><a href="/block">Block<span class="sr-only">(current)</span></a></li>
+          <li class="active"><a href="/status">Status</a></li>
+<!--
+          <li><a href="/nodes">Nodes</a></li>
+-->
+        </ul>
+        <form class="navbar-form navbar-left">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">About us</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-7">
+        <div id="main" style="width: 100%;height:600px;"></div>
+    </div>
+    <div class="col-md-3">
+        <div class="jumbotron">
+
+
+        <table class="table table-hover">
+          <caption><h2>Status</h2></caption>
+          <thead>
+            <tr>
+                <th>Node</th>
+                <th>Height</th>
+                <th>Status</th>
+                <th>Last Update</th>
+            </tr>
+          <tr>
+                <th>1</th>
+                <th>10</th>
+              <th> <button type="button" class="btn btn-success dropdown-toggle">√</button></th>
+                <th>2017-01-01 20:10</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+            <!--<h4> 添加Block</h4>-->
+              <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary " style="width:200px">添加Block</button>
+          </div>
+        <div class="modal fade "  id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width:400px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                        添加Block
+                        </h4>
+                    </div>
+                    <div class="modal-body" >
+                          <input type="text"  class="form-control" placeholder="Node ID" aria-describedby="basic-addon1">
+                        <p></p>
+                          <input type="text"  class="form-control" placeholder="Message" aria-describedby="basic-addon1">
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            添加
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+            </div>
+  </div>
+
+</div>
+<div style="display:none;">
+    <img id="pc" width="20px" height="20px" src="{{ url_for('static', filename='pic/pc.png') }}" />
+</div>
+</body>
+<script>
+        var myChart = echarts.init(document.getElementById('main'));
+        // 指定图表的配置项和数据
+        option = {
+            title: {
+                text: 'Graph 简单示例'
+            },
+
+            tooltip: {},
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series : [
+                {
+                    itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            lineStyle: {
+                                color: "#2ec7c9"
+                            }
+                        }
+                    },
+                    roam: false,
+                    type: 'graph',
+                    layout: 'none',
+                    symbolSize: 80,
+                    label: {
+                        normal: {
+                            show: true
+                        }
+                    },
+                    edgeSymbol: ['circle', 'arrow'],
+                    edgeSymbolSize: [4, 10],
+                    edgeLabel: {
+                        normal: {
+                            textStyle: {
+                                fontSize: 20
+                            }
+                        }
+                    },
+                    data: [{
+                        name: '节点1',
+                        x: 400,
+                        y: 50,
+                        itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            }
+                        }
+                    }, {
+                        name: '节点2',
+                        x: 595,
+                        y: 144,
+                        itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            }
+                        }
+                    }, {
+                        name: '节点3',
+                        x: 644,
+                        y: 356,
+                        itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            }
+                        }
+                    }, {
+                        name: '节点4',
+                        x: 508,
+                        y: 525,
+                        itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            }
+                        }
+                    },{
+                        name: '节点5',
+                        x: 292,
+                        y: 525,
+                        itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            }
+                        }
+                    },
+                     {
+                        name: '节点6',
+                        x: 156,
+                        y: 356,
+                        itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            }
+                        }
+                    },
+                     {
+                        name: '节点7',
+                        x: 205,
+                        y: 144,
+                        itemStyle: {
+                        normal: {
+                            color: "#33ccff",
+                            }
+                        }
+                    }],
+                    // links: [],
+                    links:[
+                    ]
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+        // 异步加载数据
+        var boardcast=function(s){
+            var arr=[0,1,2,3,4,5,6];
+            delete arr[s];
+            links=[];
+            for (var i=0;i<7;i++){
+                var link={
+                    source:s,
+                    target:arr[i],
+                    symbolSize: [5, 20],
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    lineStyle: {
+                        normal: {
+                            width: 5,
+                            curveness: 0.2
+                        }
+                        }
+                    }
+                links.push(link)
+            }
+            return links;
+        };
+        var check=function(){
+            links=[]
+            for(var i=0;i<7;i++){
+                for(var j=0;j<7;j++){
+                   if (i!=j)
+                       {
+                       var link={
+                            source:i,
+                            target:j,
+                            symbolSize: [5, 20],
+                            label: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            lineStyle: {
+                                normal: {
+                                    width: 5,
+                                    curveness: 0.2
+                                }
+                                }
+                            }
+
+                        links.push(link);
+                       }
+
+                }
+            }
+            return links;
+        };
+        var warning=function(){
+            var s=Math.round(Math.random()*10%7);
+            option.series[0].data[s].itemStyle.normal.color="#FF3030"
+            myChart.setOption(option);
+            option.series[0].data[s].itemStyle.normal.color="#33ccff"
+
+        };
+        setInterval(function (){
+                var s=Math.round(Math.random()*10%7);
+                option.series[0].links=check();
+                myChart.setOption(option);
+                if(1){
+                    warning()
+                    };
+            }, 1500);
+</script>
+</html>

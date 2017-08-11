@@ -147,16 +147,17 @@
                         </h4>
                     </div>
                     <div class="modal-body" >
-                          <input type="text"  class="form-control" placeholder="Node ID" aria-describedby="basic-addon1">
+                          <input type="text"  id='blockid' class="form-control" placeholder="Node ID" aria-describedby="basic-addon1">
                         <p></p>
-                          <input type="text"  class="form-control" placeholder="Message" aria-describedby="basic-addon1">
-
+                          <input type="text"  id='blockmsg' class="form-control" placeholder="Message" aria-describedby="basic-addon1">
+                        <p></p>
+                          <input type="text"  id='cost' class="form-control" placeholder="cost" aria-describedby="basic-addon1">
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" id="addBlock" class="btn btn-primary" >
                             添加
                         </button>
                     </div>
@@ -184,5 +185,25 @@
 
   <div class="col-md-1"></div>
 </div>
+<script>
+      $('#addBlock').click(function(){
+          var id=$('#blockid').val()
+          var cost=$('#cost').val()
+          var msg=$('#blockmsg').val()
+          $.ajax({
+                    type: "post",
+                    url: "/addBlock",
+                    data: { "id": id,"cost":cost,"msg":msg},    //参数值
+                    success: function(data){
+                        alert(data)
+                        window.location.reload()
+                    },
+                    error: function(data){
+                        //请求出错处理
+                    }
+            });
+      });
+</script>
 </body>
+
 </html>

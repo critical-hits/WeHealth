@@ -1,10 +1,7 @@
 import socket
 
-#约定
-# 8001~8007为七个进程数据通信的端口号
-
 #给指定ip主机的进程发送数据
-def sendData(ip,port,data):
+def sendData(data,ip,port=8000):
     address = (ip, port)
     client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
     client.connect(address)

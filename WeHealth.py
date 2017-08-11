@@ -25,7 +25,7 @@ def block():
 
 @app.route('/addBlock', methods=['POST', 'GET'])
 def addBlock():
-    data=request.form['id']+":"+int(request.form['cost'])\
+    data=request.form['id']+":"+request.form['cost']\
                     +":"+request.form['msg']
     sendData(data,'ip')
     return 'success'

@@ -1,6 +1,5 @@
 import threading
 import socket
-import numpy
 
 class Process(object):
     def __init__(self, ip,rec_port):
@@ -42,7 +41,6 @@ class Process(object):
                 self.doSomething()
                 #此处为存入数据库过程
                 self.loadToDB(data)
-
         server.close()
 
     #广播数据给其它各进程

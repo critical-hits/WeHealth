@@ -60,7 +60,7 @@ class Process(object):
         #t2.join()
 
         #每隔一定时间通知进程执行同步操作
-        sleep(30)
+        sleep(10)
         self.processManage.sync()
 
     def watch(self):
@@ -234,15 +234,25 @@ class Process(object):
         print "Load to database ..."
 
 if __name__ == '__main__':
-    ips = ['localhost', '192.168.43.235', '192.168.43.113']
+    '''
+    ips = ['192.168.43.235', '192.168.43.113', 'localhost']
     ports = [8001, 8002, 8003]
     # 七个进程的位置
     address1 = (ips[0], ports[0])
     address2 = (ips[0], ports[1])
-    address3 = (ips[0], ports[2])
-    address4 = (ips[1], ports[0])
-    address5 = (ips[1], ports[1])
-    address6 = (ips[2], ports[0])
-    address7 = (ips[2], ports[1])
-    addresses = [address1, address2, address3, address4, address5, address6, address7]
+    address3 = (ips[1], ports[0])
+    address4 = (ips[1], ports[1])
+    address5 = (ips[2], ports[0])
+    address6 = (ips[2], ports[1])
+    address7 = (ips[2], ports[2])
+    '''
+    ips = ['192.168.43.113', 'localhost']
+    ports = [8001, 8002, 8003]
+    # 七个进程的位置
+    address1 = (ips[1], ports[0])
+    address2 = (ips[1], ports[1])
+    address3 = (ips[1], ports[2])
+    #address4 = (ips[0], ports[0])
+    #addresses = [address1, address2, address3, address4]
+    addresses = [address1, address2, address3]
     p = Process(address1, addresses)

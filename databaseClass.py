@@ -21,12 +21,13 @@ class databaseClass:
         global TABLE_NAME
         TABLE_NAME = 'block'
 
-        self.conn = sqlite3.connect("wehealth.db")
+        self.conn = sqlite3.connect("wehealth.db",check_same_thread=False)
         self.cursor = self.conn.cursor()
 
         #如果存在数据表，则删除
         drop_table_sql = 'drop table if exists ' + TABLE_NAME
         self.cursor.execute(drop_table_sql)
+
 
         #创建数据库表block
         create_table_sql = "create table block " \
@@ -39,18 +40,19 @@ class databaseClass:
         #插入初始数据
         time = datetime.now()
         self.insertOp('0', 0, '', '', time)
-
+        self.conn.commit()
     # 插入数据
-    def insertOp(self, n_id, n_money, n_descrip, n_hash, n_time):
+    def insertOp(self, n_id, n_money, n_descrip, n_hash, n_time=None):
         insertStr = "insert into block (id, money, description, hashValue, time) " \
                     "values ( ?, ?, ?, ?, ?)"
         self.cursor.execute(insertStr, (n_id, n_money, n_descrip, n_hash, n_time))
-
+        self.conn.commit()
 
     # 删除数据
     def deleteOp(self, n_id):
         deleteStr = "delete from block where id = " + n_id
         self.cursor.execute(deleteStr)
+        self.conn.commit()
 
     # 改变数据
     # sqlite好像只能update已有主键的其他字段值，所以此处不考虑改
@@ -99,6 +101,7 @@ class databaseClass:
     def clearTable(self):
         clearStr = "delete from block"
         self.cursor.execute(clearStr)
+        self.conn.commit()
 
     # 数据库取最后一行数据  --fly--
     def get_last(self):
@@ -109,5 +112,4 @@ class databaseClass:
 
     def closeConn(self):
         self.cursor.close()
-        self.conn.commit()
         self.conn.close()

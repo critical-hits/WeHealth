@@ -1,18 +1,22 @@
+#coding=utf-8
 import socket
 import threading
 
 class ProcessManage(object):
     def __init__(self,addresses):
-        t = threading.Timer(30, self.sync(addresses))
-        t.start()
+        self.addresses = addresses
 
-    def sync(self,addresses):
+    def sync(self):
         data = 'synchronized#sync'
         client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-        for i in range(0,len(addresses)):
-            client.connect(addresses[i])
+        for i in range(0,len(self.addresses)):
+            client.connect(self.addresses[i])
             client.send(data)
             client.close()
+
+        t = threading.Timer(3, self.sync)
+        t.start()
+
 
 if __name__=="__main__":
     '''
@@ -38,4 +42,5 @@ if __name__=="__main__":
     address6 = (ips[1], ports[2])
     address7 = (ips[1], ports[3])
     addresses = [address1, address2, address3, address4, address5, address6, address7]
-    pm = ProcessManage(addresses)
+    p = ProcessManage(addresses)
+    p.sync()

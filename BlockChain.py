@@ -1,11 +1,13 @@
 #coding:utf-8
 
+from database import database
+
 from Block import Block#要不要？
+
 #import DB
 import json
 
 from databaseClass import databaseClass
-
 
 
 class BlockChain(object):#不存数据的链？
@@ -14,7 +16,7 @@ class BlockChain(object):#不存数据的链？
         self.head = None   # 指向最新的一个区块
         #self.blocks = {}   # 包含所有区块的一个字典
         self.blockchain=[]  # 包含所有hash的一个数组
-        self.dbsql = databaseClass() #数据库操作类
+        self.dbsql = database.dbcon #数据库操作类
 
     '''
         添加区块函数
@@ -22,6 +24,8 @@ class BlockChain(object):#不存数据的链？
 
     def clean_chain(self):
         self.blockchain=[]
+
+
 
     def add_block(self, new_block):
         previous_hash = self.head.hash() if self.head else None
@@ -36,7 +40,7 @@ class BlockChain(object):#不存数据的链？
         '''
         self.head = new_block
         #DB.save()
-        self.insert_database(new_block)
+        #self.insert_database(new_block)
         #add to database  insert（）
     def __repr__(self):
         num_existing_blocks = len(self.blockchain)
@@ -80,7 +84,8 @@ class BlockChain(object):#不存数据的链？
         return str
         '''
 
-
+    def close(self):
+        self.dbsql.closeConn()
 
     def chain_toJson(self):
         r = self.dbsql.selectAll()
@@ -89,14 +94,20 @@ class BlockChain(object):#不存数据的链？
 
     def get_fromJson(self,jsonstr):
         jsonlist = json.loads(jsonstr)
+        #for()
+        #self.blockchain=jsonlist
         return jsonlist
 
     def insert_database(self,b):
-        self.dbsql.insertOp(b.get_identifier(), b.get_value(), b.get_data, b.get_previoushash())
+        self.dbsql.insertOp(b.identifier, b.value, b.data, b.previous_hash)
 
-    def save_allChain(self):
-        for i in len(self.blockchain):
-            self.dbsql.insertOp(self.blockchain.get_identifier(),self.blockchain.get_value(),self.blockchain.get_data,self.blockchain.get_previoushash())
+    def save_allChain(self,jj):
+
+        for i in range(0,len(jj)):
+            b=jj[i]
+            self.dbsql.insertOp(b[0],b[1],b[2],b[3])
+           # self.dbsql.close()
+            #self.dbsql.insertOp(b[0].get_identifier(),b.get_value(),b.get_data,b.get_previoushash())
         #保存block到数据库
         #...
         return

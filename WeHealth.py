@@ -4,7 +4,7 @@ import requests
 from flask import Flask, render_template, g, request
 from Connect import sendData
 app = Flask(__name__)
-DATABASE = 'myhealth.db'
+DATABASE = 'wehealth.db'
 """
 响应请求
 """
@@ -18,10 +18,10 @@ def index():
 @app.route('/block')
 def block():
     blocks=[]
-    for data in query_db('select * from users'):
-        print user['username'], 'has the id', user['user_id']
-        blocks.append({id:data['id'],msg:data['msg'],cost:data['cost'],\
-                      hash:data['hash'],time:data['time']})
+    for data in query_db('select * from block'):
+        
+        blocks.append({'id':data['id'],'msg':data['description'],'cost':data['money'],\
+                      'hash':data['hashValue'],'time':data['time']})
 
     return render_template('block.html',blocks=blocks)
 
@@ -37,26 +37,6 @@ def addBlock():
 @app.route('/status')
 def status():
     return render_template('status.html')
-
-
-def init_db():
-    with app.app_context():
-        db = get_db()
-        createTable = "create table if not exists block " \
-                      "(id varchar(20) primary key, " \
-                      "money int(10), " \
-                      "description varchar(20), " \
-                      "hashValue varchar(500))"
-        with app.open_resource(createTable, mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-
-# @app.route('/nodes')
-# def nodes():
-#     return render_template('nodes.html')
-def post_msg():
-    pass
 
 
 '''
@@ -85,6 +65,19 @@ def get_connection():
     if db is None:
         db = g._db = connect_db()
     return db
+
+def init_db():
+    with app.app_context():
+        db = get_db()
+        createTable = "create table if not exists block " \
+                      "(id varchar(20) primary key, " \
+                      "money int(10), " \
+                      "description varchar(20), " \
+                      "hashValue varchar(500))"
+        with app.open_resource(createTable, mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
 '''
 测试页面
 1.容灾

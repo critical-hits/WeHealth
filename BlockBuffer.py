@@ -22,11 +22,12 @@ class BlockBuffer(object):
         for key in sorted(buffer.keys()):
             buffer[key].setPreHash(obj.getHead().previous_hash if obj.getHead() else None) # 保存前一个区块的hash（）是否改成ID
             obj.add_block(buffer[key])
-            #obj.insert_database(buffer[key])
+            obj.insert_database(buffer[key])
             #block.save() 调用dao层
+        buffer.clear()
         return
 
-    def sortBufer(obj): # 块排序函数修正缓存块中交易数据顺序，建议调用(3s一次)
+    def sortBuffer(obj): # 块排序函数修正缓存块中交易数据顺序，建议调用(3s一次)
         sorted(int(buffer.keys()))
 
     def cleanBuffer(obj):  # 清空缓存块

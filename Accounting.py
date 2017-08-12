@@ -21,7 +21,7 @@ class Accounting(object):
             #return self.chain.head.previous_hash
             return self.chain.head.hash()
         else:
-            r= database.dbcon.get_last()
+            r= database.dbcon.get_lasthash()
             hash=Block(r[0][0],r[0][1],r[0][2],r[0][3]).hash()
             #return database.dbcon.get_lasthash()
             return hash

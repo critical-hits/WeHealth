@@ -1,28 +1,36 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import requests
-from flask import Flask, render_template, g, request
+import socket
+from flask import Flask, render_template, g, request,jsonify
 from Connect import sendData
 app = Flask(__name__)
 DATABASE = 'wehealth.db'
+PORT = 5002
+Node=['00','00','00','00','00','00','00','00']
+import threading
 """
 响应请求
 """
-
-
 @app.route('/')
 def index():
-    return render_template('index.html')
+    blocks=[]
+    for data in query_db('select * from block limit 5'):
+        blocks.append({'id':data['id'],'msg':data['description'],'cost':data['money'],\
+                      'hash':data['hashValue'],'time':data['time']})
+
+    a=[]
+    for i in range(0,7):
+        a.append((Node[i])[1])
+    return render_template('index.html',blocks=blocks,node=a)
 
 
 @app.route('/block')
 def block():
     blocks=[]
     for data in query_db('select * from block'):
-        
         blocks.append({'id':data['id'],'msg':data['description'],'cost':data['money'],\
                       'hash':data['hashValue'],'time':data['time']})
-
     return render_template('block.html',blocks=blocks)
 
 
@@ -33,21 +41,40 @@ def addBlock():
     sendData(data,'192.168.43.116')
     return 'success'
 
+@app.route('/updateBlock', methods=['POST', 'GET'])
+def updateBlock():
+    updateSql='UPDATE block SET money=%s, description=%s\
+            WHERE id=%s;'%(request.form['cost'],request.form['msg'],request.form['id'])
+    db=get_connection()
+    db.cursor().execute(updateSql)
+    db.commit()
+    return 'success'
 
 @app.route('/status')
 def status():
     return render_template('status.html')
 
+@app.route('/getStatus', methods=['POST', 'GET'])
+def getStatus():
+    return jsonify(result=Node)
 
-'''
+
+"""
 数据库连接
-'''
+"""
+
 def connect_db():
     return sqlite3.connect(DATABASE)
+
+@app.before_first_request
+def before_first_request():
+    lst  = Listener()   # create a listen thread
+    lst.start() # then start
 
 @app.before_request
 def before_request():
     g.db = connect_db()
+
 
 @app.teardown_request
 def teardown_request(exception):
@@ -68,7 +95,7 @@ def get_connection():
 
 def init_db():
     with app.app_context():
-        db = get_db()
+        db = get_connection()
         createTable = "create table if not exists block " \
                       "(id varchar(20) primary key, " \
                       "money int(10), " \
@@ -84,13 +111,20 @@ def init_db():
 2.篡改
 3.输入
 '''
-
-
-@app.route('/input')
-# 测试输入一个node和一个信息
-def input():
-    return 'input'
-
+class Listener(threading.Thread):
+    def run(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.bind(("", PORT))
+        sock.listen(0)
+        while True:
+            client, cltadd = sock.accept()
+            print 'Connected by ', cltadd
+            data = client.recv(1024)
+            sp=data.split('#')
+            print sp
+            Node[int(sp[1])]=sp[0]
+        sock.close()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)

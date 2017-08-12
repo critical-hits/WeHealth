@@ -21,16 +21,19 @@ class Process(object):
         p.join()
 
         #周期性调用，每隔3秒对缓冲区内的块进行排序
-        t1 = threading.Timer(3, self.blockBuffer.sortBufer())
-        t1.start()
-        t1.join()
+        # t1 = threading.Timer(3, self.blockBuffer.sortBufer())
+        # t1.start()
+        # t1.join()
 
-        #周期性调用，每隔10秒将缓冲区的块数据写入数据库
-        t2 = threading.Timer(10, self.writData())
+        #周期性调用，每隔5秒将缓冲区的块数据写入数据库和本地链条
+        t2 = threading.Timer(5, self.writData())
         t2.start()
         t2.join()
 
+
+
     def writData(self):
+        self.blockBuffer.sortBufer()
         self.blockBuffer.saveBuffer()
         self.blockBuffer.cleanBuffer()
 
@@ -58,7 +61,7 @@ class Process(object):
                             if self.addresses[i] != self.address:
                                 self.broadCast(self.addresses[i], data)
                         # 此处将数据放入区块链进行相应处理
-                        self.doSomething(data)
+                        self.doSomething(datas[0])
                     if datas[1] == 'p2p':
                         print '...'
 
@@ -103,8 +106,7 @@ class Process(object):
     #将接受到的数据添加到区块链中
     def doSomething(self,data):
         print "I'm doing something ..."
-        datas = data.split('#')
-        tmp = datas[0].split(':')
+        tmp = data.split(':')
         #创建一个新区块
         block = Block(tmp[0],tmp[1],tmp[2])
         #将块放入缓冲区
@@ -112,11 +114,11 @@ class Process(object):
 
     #执行同步操作
     def sync(self):
-        print '...'
+        print 'syn...'
 
     #向其它各进程发送hash值
     def sendHashValue(self):
-        hashValue = ''
+        hashValue = 'hashvalue'
         client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         for i in range(0, len(self.addresses)):
             if self.addresses[i] != self.address:

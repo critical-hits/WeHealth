@@ -29,7 +29,7 @@ class Process(object):
                     break
                 else:
                     print data
-                    datas = data.split(',')
+                    datas = data.split('#')
                     if datas[1] == 'client':
                         # 接收到数据之后，首先广播到其它各个节点中去，然后进行相关的处理
                         # 此处为广播到其它节点的代码
@@ -49,8 +49,8 @@ class Process(object):
     #hashval表示哈希值
     #cost表示费用
     def broadCast(self,address,data):
-        datas = data.split(',')
-        tmp = datas[0] + ',broadcast'
+        datas = data.split('#')
+        tmp = datas[0] + '#broadcast'
         client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         client.connect(address)
         client.send(tmp)

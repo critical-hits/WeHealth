@@ -25,12 +25,12 @@ class databaseClass:
         self.cursor = self.conn.cursor()
 
         #如果存在数据表，则删除
-        drop_table_sql = 'drop table if exists ' + TABLE_NAME
-        self.cursor.execute(drop_table_sql)
+#        drop_table_sql = 'drop table if exists ' + TABLE_NAME
+#        self.cursor.execute(drop_table_sql)
 
 
         #创建数据库表block
-        create_table_sql = "create table block " \
+        create_table_sql = "create table if not exists block " \
               "(id varchar(20) primary key, " \
               "money int(10), " \
               "description varchar(20), " \
@@ -38,9 +38,14 @@ class databaseClass:
         self.cursor.execute(create_table_sql)
 
         #插入初始数据
-        time = datetime.now()
-        self.insertOp('0', 0, '', '', time)
-        self.conn.commit()
+        self.cursor.execute("select * from block")
+        v = self.cursor.fetchall()
+        l = len(v)
+        if l == 0:
+            time = datetime.now()
+            self.insertOp('0', 0, '', '', time)
+            self.conn.commit()
+
     # 插入数据
     def insertOp(self, n_id, n_money, n_descrip, n_hash, n_time=None):
         insertStr = "insert into block (id, money, description, hashValue, time) " \

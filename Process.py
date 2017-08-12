@@ -60,7 +60,7 @@ class Process(object):
         #t2.join()
 
         #每隔一定时间通知进程执行同步操作
-        sleep(10)
+        sleep(30)
         self.processManage.sync()
 
     def watch(self):

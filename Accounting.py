@@ -1,6 +1,6 @@
 #coding=utf-8
 
-import connection
+
 from BlockChain import BlockChain
 from database import database
 import collections

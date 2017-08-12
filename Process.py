@@ -199,4 +199,4 @@ if __name__ == '__main__':
     address6 = (ips[1], ports[2])
     address7 = (ips[1], ports[3])
     addresses = [address1, address2, address3, address4, address5, address6, address7]
-    p = Process(address7,addresses)
+    p = Process(address4,addresses)

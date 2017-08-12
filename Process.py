@@ -58,7 +58,7 @@ class Process(object):
         #t2.join()
 
         #每隔一定时间通知进程执行同步操作
-        sleep(10)
+        sleep(30)
         self.processManage.sync()
 
     def watch(self):
@@ -241,4 +241,4 @@ if __name__ == '__main__':
     address6 = (ips[0], ports[1])
     address7 = (ips[0], ports[2])
     addresses = [address1, address2, address3,address4,address5,address6,address7]
-    p = Process(address1, addresses)
+    p = Process(address4, addresses)

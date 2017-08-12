@@ -13,7 +13,7 @@ TABLE_NAME = ''
 '''
 数据库操作类
 '''
-class database:
+class databaseClass:
 
     def __init__(self):
 

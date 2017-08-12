@@ -2,7 +2,10 @@
 import threading
 import socket
 import Block
+from BlockChain import BlockChain
 from BlockBuffer import BlockBuffer
+from Accounting import Accounting
+import json
 
 class Process(object):
     def __init__(self,address,addresses):
@@ -62,12 +65,17 @@ class Process(object):
                                 self.broadCast(self.addresses[i], data)
                         # 此处将数据放入区块链进行相应处理
                         self.doSomething(datas[0])
-                    if datas[1] == 'p2p':
+                    if datas[1] == 'requestBook':
+                        self.send_book(datas[0])
                         print '...'
-
-                    #若接收到同步信号，则执行同步操作
+                        #请求账本，要实现发送账本-- fly --
+                    if datas[1] == 'sendBook':
+                        #收到账本，存到数据库 -- fly --
+                        self.save_database(datas[0])
+                    #若接收到同步信号，则执行同步操作 -- fly --
                     if datas[1] == 'sync':
                         self.sendHashValue()
+                        #发送对账状态  -- fly --
 
                     #若接收到hash值，则一一进行比对
                     #此时接收的data数据格式为ip:port$hashvalue#hashvalue
@@ -95,13 +103,15 @@ class Process(object):
         client.send(tmp)
         client.close()
 
-    def p2p(self,address,data):
-        datas = data.split('#')
-        tmp = datas[0] + '#p2p'
+    def p2p(self,address,data,flag):
+        #datas = data.split('#')
+        tmp = data + '#'+flag
         client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         client.connect(address)
         client.send(tmp)
         client.close()
+
+
 
     #将接受到的数据添加到区块链中
     def doSomething(self,data):
@@ -112,9 +122,44 @@ class Process(object):
         #将块放入缓冲区
         self.blockBuffer.reciveBlock(block)
 
-    #执行同步操作
+    #执行同步操作 -- fly --
     def sync(self):
+        ac = Accounting()
+        chash=ac.seek_lastHash()
+        ipport=ac.get_correctAccount(self.directory,chash)
+
+        if ipport == None:
+            #账本是对的，向前台发送正常状态
+            '''
+            '''
+        else:
+            ac.requst_account(ipport)
+            #向前台发送账本错误状态
+            '''
+            '''
         print 'syn...'
+    # -- fly --
+    def requst_account(self,ipport):
+        newAddress=(ipport.split(':')[0],ipport.split(':')[1])
+        data=str(self.address)
+        flag='requestBook'
+        self.p2p(newAddress,data,flag)
+
+    #-- fly --
+    def save_database(self,accountbook):
+        ac=Accounting()
+        bc = BlockChain()
+        ac.get_accountbook(bc,accountbook)
+        ##发送修正状态码
+        '''
+        '''
+    #-- fly --
+    def send_book(self,ipport):
+        newAddress = (ipport.split(':')[0], ipport.split(':')[1])
+        bc = BlockChain()
+        data = bc.chain_toJson()
+        flag = 'sendBook'
+        self.p2p(newAddress, data, flag)
 
     #向其它各进程发送hash值
     def sendHashValue(self):

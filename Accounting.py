@@ -102,7 +102,7 @@ class Accounting(object):
         bChain.dbsql.clearTable()
         jj=bChain.get_fromJson(accountbook)
         bChain.save_allChain(jj)
-        return
+        return bChain
         '''
         接收账本,直接入库
         stringLine = str.split(accountbook,'|')

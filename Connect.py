@@ -8,3 +8,6 @@ def sendData(data,ip,port=8001):
     client.connect(address)
     client.send(data+'#client')
     client.close()
+
+if __name__ == '__main__':
+    sendData('jianghezhi','localhost',8001)

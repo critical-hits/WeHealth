@@ -99,7 +99,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="/block">Block<span class="sr-only">(current)</span></a></li>
+          <li class="active"><a href="/block">Blocks<span class="sr-only">(current)</span></a></li>
           <li ><a href="/status">Status</a></li>
 <!--
           <li><a href="/nodes">Nodes</a></li>
@@ -124,16 +124,17 @@
     <div class="col-md-1"></div>
     <div class="col-md-2">
           <div class="jumbotron">
-              <h4> 选择Node</h4>
-                  <select class="form-control " style="width:200px;">
+              <h4> 当前Node</h4>
+                  <h3><span class="label label-info" style="width:80%">节点1</span><h3>
+                  <!--<select disabled=true class="form-control " style="width:100%;">
                       <option>1</option>
                       <option>2</option>
                       <option>3</option>
                       <option>4</option>
                       <option>5</option>
-                  </select>
+                  </select>-->
               <h4> 添加Block</h4>
-              <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary " style="width:200px">添加</button>
+              <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary " style="width:35%">添加</button>
           </div>
         <div class="modal fade "  id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:400px">
@@ -170,12 +171,21 @@
           <caption><h2>Blocks</h2></caption>
           <thead>
             <tr>
-              <th>Height</th>
-              <th>Age</th>
-              <th>Transactions</th>
-              <th>Mined by</th>
-              <th>Size</th>
+              <th>ID</th>
+              <th>Message</th>
+              <th>Cost</th>
+              <th>Last Hash</th>
+              <th>Update Time</th>
             </tr>
+            {% for item in blocks %}
+              <tr>
+                <th>{{ item.id }}</th>
+                <th>{{ item.msg }}</th>
+                <th>{{ item.cost }}</th>
+                <th>{{ item.hash}} </th>
+                <th>{{ item.time }} </th>
+              </tr>
+            {% endfor %}
           </thead>
           <tbody>
 

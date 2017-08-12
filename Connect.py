@@ -1,8 +1,8 @@
-#coding=utf-8
+# -*- coding: utf-8 -*-
 import socket
 
 #给指定ip主机的进程发送数据
-def sendData(data,ip,port=8000):
+def sendData(data,ip,port=8001):
     address = (ip, port)
     client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
     client.connect(address)

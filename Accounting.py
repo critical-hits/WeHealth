@@ -1,24 +1,32 @@
 #coding=utf-8
 
 import connection
-import BlockChain
+from BlockChain import BlockChain
+from database import database
 import collections
 from operator import itemgetter
-import Block
-import DB.py
+from Block import Block
+#import DB.py
 
 
 class Accounting(object):
     def __init__(self,chain=None,hashChain=None):
         self.chain= chain
        # self.hashChain=hashChain
-    '''
+
     def seek_lastHash(self):
         #数据库操作调出最新的hash，比对其他人的
         # s= str(sql)
-        b=Block()
+        if self.chain.head!=None:
+            #return self.chain.head.previous_hash
+            return self.chain.head.hash()
+        else:
+            r= database.dbcon.get_last()
+            hash=Block(r[0][0],r[0][1],r[0][2],r[0][3]).hash()
+            #return database.dbcon.get_lasthash()
+            return hash
         return
-
+    '''
     def synchro_database(self,bc):
         ''''''同步数据库
         bc数据库 写入区块链
@@ -43,22 +51,35 @@ class Accounting(object):
     def get_correctAccount(self,sychroTable,chash):
         #初始化账本
         if self.chain:
-            hc = self.chain.get_blockchain()
+            hc = self.chain.blockchain
         else:
             bc=BlockChain()
-            hc=bc.chain.get_blockchain()
+            bc.synchro_fromDatabase()#如果关机重启了，从数据库同步账本
+            hc=bc.blockchain
 
         #统计认可度最高的hash
+        t=collections.Counter(sychroTable.values())
         a=sorted(collections.Counter(sychroTable.values()))
-        righthash=max(a.items(), key=lambda x: x[1])[0]
+        b=0
+        righthash=0
+        for i in t.keys():
+            if t[i]>b:
+                b=t[i]
+                righthash=i
+        #righthash=max(t.values())
+
+        #Sfor m in
         for k in sychroTable.keys():
             if sychroTable[k]==righthash:
                 ipaddress=k
+                break;
 
         #查自身的链表
         if righthash!=chash:
             return {righthash: ipaddress}
         for i in range(1,len(hc)):
+            print hc[i-1].hash()
+            print hc[i].get_previoushash()
             if hc[i-1].hash()!=hc[i].get_previoushash():
                 return {righthash: ipaddress}
         return None
@@ -77,9 +98,10 @@ class Accounting(object):
         connection.sendtoPoint(message,ipaddress)
 
     #接收到账本后调用来同步账本，写入数据库
-    def get_accountbook(self,blankChain,accountbook):
-        blankChain.get_fromJson(accountbook)
-        blankChain.save_toDatabase()
+    def get_accountbook(self,bChain,accountbook):
+        bChain.dbsql.clearTable()
+        jj=bChain.get_fromJson(accountbook)
+        bChain.save_allChain(jj)
         return
         '''
         接收账本,直接入库

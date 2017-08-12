@@ -27,7 +27,7 @@ class Block(object):
 
         return message.hexdigest()
 
-    def get_indetifier(self):
+    def get_identifier(self):
         return self.identifier
     def get_value(self):
         return self.value

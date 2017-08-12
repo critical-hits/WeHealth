@@ -1,6 +1,8 @@
 #coding=utf-8
 import threading
 import socket
+import Block
+import BlockBuffer
 
 class Process(object):
     def __init__(self,address,addresses):
@@ -8,12 +10,29 @@ class Process(object):
         self.address = address
         #获取所有进程所在位置
         self.addresses = addresses
+        #创建缓冲区
+        self.blockBuffer = BlockBuffer()
+
         #启动一个监听线程，时刻监听指定端口是否有数据传来
         p = threading.Thread(target=self.waitData(), args=())
         p.start()
         p.join()
 
+        #周期性调用，每隔3秒对缓冲区内的块进行排序
+        t1 = threading.Timer(3, self.blockBuffer.sortBufer())
+        t1.start()
+        t1.join()
 
+        #周期性调用，每隔10秒将缓冲区的块数据写入数据库
+        t2 = threading.Timer(10, self.writData())
+        t2.start()
+        t2.join()
+
+    def writData(self):
+        self.blockBuffer.saveBuffer()
+        self.blockBuffer.cleanBuffer()
+
+    #监听线程，时刻监听指定端口是否有数据传来
     def waitData(self):
         server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -36,20 +55,10 @@ class Process(object):
                         for i in range(0,len(self.addresses)):
                             if self.addresses[i] != self.address:
                                 self.broadCast(self.addresses[i], data)
-                        '''
-                        for i in range(0, len(self.ips)):
-                            for j in range(0, len(self.ports)):
-                                #print "i:" + str(i) + " j:" + str(j)
-                                if self.ips[i] == self.ip:
-                                    if self.ports[j] != self.port:
-                                        # 'ip:'+self.ip+' port:'+ str(self.port)
-                                        #print self.ips[i] + ' ' + str(self.ports[j])
-                                        self.broadCast(self.ips[i], self.ports[j], data)
-                                else:
-                                    self.broadCast(self.ips[i], self.ports[j], data)
-                        '''
+                    if datas[1] == 'p2p':
+                        print '...'
                     # 此处为相关处理的代码
-                    self.doSomething()
+                    self.doSomething(data)
                     # 此处为存入数据库过程
                     self.loadToDB(data)
 
@@ -67,8 +76,22 @@ class Process(object):
         client.send(tmp)
         client.close()
 
-    def doSomething(self):
+    def p2p(self,address,data):
+        datas = data.split('#')
+        tmp = datas[0] + '#p2p'
+        client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+        client.connect(address)
+        client.send(tmp)
+        client.close()
+
+    def doSomething(self,data):
         print "I'm doing something ..."
+        datas = data.split('#')
+        tmp = datas[0].split(':')
+        #创建一个新区块
+        block = Block(tmp[0],tmp[1],tmp[2])
+        #将块放入缓冲区
+        self.blockBuffer.reciveBlock(block)
 
     def loadToDB(self, data):
         print "Load to database ..."

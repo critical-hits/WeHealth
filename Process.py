@@ -24,10 +24,8 @@ class Process(object):
         self.directory = {}
         #同步进程
         self.processManage = ProcessManage(self.address,self.addresses)
-        #区块链
+
         self.chain=BlockChain()
-        #Web端的IP和端口
-        self.web_address = ('192.168.43.235',5001)
 
        # t1=threading.Thread(target=self.watch(), args=())
        # t1.start()
@@ -102,9 +100,6 @@ class Process(object):
                         for i in range(0,len(self.addresses)):
                             if self.addresses[i] != self.address:
                                 self.broadCast(self.addresses[i], data)
-                        #广播完后向Web发送状态
-                        self.broadToWeb(self.web_address,'00#0')
-
                         # 此处将数据放入区块链进行相应处理
                         self.doSomething(datas[0])
                     if datas[1] == 'broadcast':
@@ -119,7 +114,6 @@ class Process(object):
                         self.save_database(datas[0])
                     #若接收到同步信号，则执行同步操作 -- fly --
                     if datas[1] == 'sync':
-                        self.broadToWeb(self.web_address,'10#0')
                         self.sendHashValue()
                         #发送对账状态  -- fly --
 
@@ -142,9 +136,6 @@ class Process(object):
     #hashval表示哈希值
     #cost表示费用
     def broadCast(self,address,data):
-        #向Web广播数据
-        self.broadToWeb(self.web_address,'10#0')
-
         datas = data.split('#')
         tmp = datas[0] + '#broadcast'
         client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
@@ -160,11 +151,7 @@ class Process(object):
         client.send(tmp)
         client.close()
 
-    def broadToWeb(self,address,data):
-        client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-        client.connect(address)
-        client.send(data)
-        client.close()
+
 
     #将接受到的数据添加到区块链中
     def doSomething(self,data):
@@ -183,13 +170,11 @@ class Process(object):
 
         if ipport == None:
             #账本是对的，向前台发送正常状态
-            self.broadToWeb(self.web_address, '10#0')
             '''
             '''
         else:
             ac.requst_account(ipport)
             #向前台发送账本错误状态
-            self.broadToWeb(self.web_address, '11#0')
             '''
             '''
         print 'syn...'
@@ -206,7 +191,6 @@ class Process(object):
         bc = self.chain
         ac.get_accountbook(bc,accountbook)
         ##发送修正状态码
-        self.broadToWeb(self.web_address, '10#0')
         '''
         '''
     #-- fly --
@@ -252,7 +236,7 @@ if __name__ == '__main__':
     address1 = (ips[1], ports[0])
     address2 = (ips[1], ports[1])
     address3 = (ips[1], ports[2])
-    #address4 = (ips[0], ports[0])
+    #address4 = (ips[0], ports[3])
     #addresses = [address1, address2, address3, address4]
     addresses = [address1, address2, address3]
     p = Process(address1, addresses)

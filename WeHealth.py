@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import sqlite3
-import header
 import requests
 from flask import Flask, render_template, g, request
-
 from Connect import sendData
-
 app = Flask(__name__)
-
+DATABASE = 'wehealth.db'
 """
 响应请求
 """
@@ -20,14 +17,20 @@ def index():
 
 @app.route('/block')
 def block():
-    return render_template('block.html')
+    blocks=[]
+    for data in query_db('select * from block'):
+        
+        blocks.append({'id':data['id'],'msg':data['description'],'cost':data['money'],\
+                      'hash':data['hashValue'],'time':data['time']})
+
+    return render_template('block.html',blocks=blocks)
 
 
 @app.route('/addBlock', methods=['POST', 'GET'])
 def addBlock():
     data=request.form['id']+":"+request.form['cost']\
                     +":"+request.form['msg']
-    sendData(data,'ip')
+    sendData(data,'192.168.43.116')
     return 'success'
 
 
@@ -35,6 +38,33 @@ def addBlock():
 def status():
     return render_template('status.html')
 
+
+'''
+数据库连接
+'''
+def connect_db():
+    return sqlite3.connect(DATABASE)
+
+@app.before_request
+def before_request():
+    g.db = connect_db()
+
+@app.teardown_request
+def teardown_request(exception):
+    if hasattr(g, 'db'):
+        g.db.close()
+
+def query_db(query, args=(), one=False):
+    cur = g.db.execute(query, args)
+    rv = [dict((cur.description[idx][0], value)
+               for idx, value in enumerate(row)) for row in cur.fetchall()]
+    return (rv[0] if rv else None) if one else rv
+
+def get_connection():
+    db = getattr(g, '_db', None)
+    if db is None:
+        db = g._db = connect_db()
+    return db
 
 def init_db():
     with app.app_context():
@@ -47,39 +77,6 @@ def init_db():
         with app.open_resource(createTable, mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
-
-
-# @app.route('/nodes')
-# def nodes():
-#     return render_template('nodes.html')
-def post_msg():
-    pass
-
-
-'''
-数据库连接
-'''
-
-
-def get_db():
-    """Opens a new database connection if there is none yet for the
-    current application context.
-    """
-    if not hasattr(g, 'sqlite_db'):
-        g.sqlite_db = connect_db()
-    return g.sqlite_db
-
-
-def connect_db():
-    cx = sqlite3.connect("WeHealth.db")
-
-
-@app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
-
 
 '''
 测试页面
@@ -96,4 +93,4 @@ def input():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)

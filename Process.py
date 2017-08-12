@@ -1,6 +1,11 @@
 #coding=utf-8
 import threading
 import socket
+import Block
+from BlockChain import BlockChain
+from BlockBuffer import BlockBuffer
+from Accounting import Accounting
+import json
 
 class Process(object):
     def __init__(self,address,addresses):
@@ -8,12 +13,34 @@ class Process(object):
         self.address = address
         #获取所有进程所在位置
         self.addresses = addresses
+        #创建缓冲区
+        self.blockBuffer = BlockBuffer()
+        #创建一个字典
+        self.directory = {}
+
         #启动一个监听线程，时刻监听指定端口是否有数据传来
         p = threading.Thread(target=self.waitData(), args=())
         p.start()
         p.join()
 
+        #周期性调用，每隔3秒对缓冲区内的块进行排序
+        # t1 = threading.Timer(3, self.blockBuffer.sortBufer())
+        # t1.start()
+        # t1.join()
 
+        #周期性调用，每隔5秒将缓冲区的块数据写入数据库和本地链条
+        t2 = threading.Timer(5, self.writData())
+        t2.start()
+        t2.join()
+
+
+
+    def writData(self):
+        self.blockBuffer.sortBufer()
+        self.blockBuffer.saveBuffer()
+        self.blockBuffer.cleanBuffer()
+
+    #监听线程，时刻监听指定端口是否有数据传来
     def waitData(self):
         server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -36,20 +63,29 @@ class Process(object):
                         for i in range(0,len(self.addresses)):
                             if self.addresses[i] != self.address:
                                 self.broadCast(self.addresses[i], data)
-                        '''
-                        for i in range(0, len(self.ips)):
-                            for j in range(0, len(self.ports)):
-                                #print "i:" + str(i) + " j:" + str(j)
-                                if self.ips[i] == self.ip:
-                                    if self.ports[j] != self.port:
-                                        # 'ip:'+self.ip+' port:'+ str(self.port)
-                                        #print self.ips[i] + ' ' + str(self.ports[j])
-                                        self.broadCast(self.ips[i], self.ports[j], data)
-                                else:
-                                    self.broadCast(self.ips[i], self.ports[j], data)
-                        '''
-                    # 此处为相关处理的代码
-                    self.doSomething()
+                        # 此处将数据放入区块链进行相应处理
+                        self.doSomething(datas[0])
+                    if datas[1] == 'requestBook':
+                        self.send_book(datas[0])
+                        print '...'
+                        #请求账本，要实现发送账本-- fly --
+                    if datas[1] == 'sendBook':
+                        #收到账本，存到数据库 -- fly --
+                        self.save_database(datas[0])
+                    #若接收到同步信号，则执行同步操作 -- fly --
+                    if datas[1] == 'sync':
+                        self.sendHashValue()
+                        #发送对账状态  -- fly --
+
+                    #若接收到hash值，则一一进行比对
+                    #此时接收的data数据格式为ip:port$hashvalue#hashvalue
+                    if datas[1] == 'hashvalue':
+                        tmp = datas[0].split('$')
+                        self.directory[tmp[0]]=tmp[1]
+                        # 当已收到其它进程发送过来的hash值时，执行判断同步过程
+                        if len(self.directory == 6):
+                            self.sync()
+
                     # 此处为存入数据库过程
                     self.loadToDB(data)
 
@@ -67,16 +103,94 @@ class Process(object):
         client.send(tmp)
         client.close()
 
-    def doSomething(self):
+    def p2p(self,address,data,flag):
+        #datas = data.split('#')
+        tmp = data + '#'+flag
+        client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+        client.connect(address)
+        client.send(tmp)
+        client.close()
+
+
+
+    #将接受到的数据添加到区块链中
+    def doSomething(self,data):
         print "I'm doing something ..."
+        tmp = data.split(':')
+        #创建一个新区块
+        block = Block(tmp[0],tmp[1],tmp[2])
+        #将块放入缓冲区
+        self.blockBuffer.reciveBlock(block)
+
+    #执行同步操作 -- fly --
+    def sync(self):
+        ac = Accounting()
+        chash=ac.seek_lastHash()
+        ipport=ac.get_correctAccount(self.directory,chash)
+
+        if ipport == None:
+            #账本是对的，向前台发送正常状态
+            '''
+            '''
+        else:
+            ac.requst_account(ipport)
+            #向前台发送账本错误状态
+            '''
+            '''
+        print 'syn...'
+    # -- fly --
+    def requst_account(self,ipport):
+        newAddress=(ipport.split(':')[0],ipport.split(':')[1])
+        data=str(self.address)
+        flag='requestBook'
+        self.p2p(newAddress,data,flag)
+
+    #-- fly --
+    def save_database(self,accountbook):
+        ac=Accounting()
+        bc = BlockChain()
+        ac.get_accountbook(bc,accountbook)
+        ##发送修正状态码
+        '''
+        '''
+    #-- fly --
+    def send_book(self,ipport):
+        newAddress = (ipport.split(':')[0], ipport.split(':')[1])
+        bc = BlockChain()
+        data = bc.chain_toJson()
+        flag = 'sendBook'
+        self.p2p(newAddress, data, flag)
+
+    #向其它各进程发送hash值
+    def sendHashValue(self):
+        hashValue = 'hashvalue'
+        client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+        for i in range(0, len(self.addresses)):
+            if self.addresses[i] != self.address:
+                client.connect(addresses[i])
+                #拼接的数据格式为ip:port$hashvalue#hashvalue
+                client.send(self.address[0]+':'+str(self.address[1])+'$'+str(hashValue)+'#hashvalue')
+                client.close()
 
     def loadToDB(self, data):
         print "Load to database ..."
 
 if __name__ == '__main__':
-    ips = ['192.168.43.235', 'localhost']
-    ports = [8001, 8002, 8003, 8004]
-    #七个进程的位置
+    '''
+    ips = ['192.168.43.235', '192.168.43.113', 'localhost']
+    ports = [8001, 8002, 8003]
+    # 七个进程的位置
+    address1 = (ips[0], ports[0])
+    address2 = (ips[0], ports[1])
+    address3 = (ips[1], ports[0])
+    address4 = (ips[1], ports[1])
+    address5 = (ips[2], ports[0])
+    address6 = (ips[2], ports[1])
+    address7 = (ips[2], ports[2])
+    '''
+    ips = ['192.168.43.113', 'localhost']
+    ports = [8001, 8002, 8003,8004]
+    # 七个进程的位置
     address1 = (ips[0], ports[0])
     address2 = (ips[0], ports[1])
     address3 = (ips[0], ports[2])
@@ -84,6 +198,5 @@ if __name__ == '__main__':
     address5 = (ips[1], ports[1])
     address6 = (ips[1], ports[2])
     address7 = (ips[1], ports[3])
-    addresses = [address1,address2,address3,address4,address5,address6,address7]
-
-    p1 = Process(address7,addresses)
+    addresses = [address1, address2, address3, address4, address5, address6, address7]
+    p = Process(address4,addresses)

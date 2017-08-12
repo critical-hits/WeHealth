@@ -105,12 +105,12 @@
           <li><a href="/nodes">Nodes</a></li>
 -->
         </ul>
-        <form class="navbar-form navbar-left">
+        <!--<form class="navbar-form navbar-left">
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Search">
           </div>
           <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+        </form>-->
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#">About us</a></li>
         </ul>
@@ -124,8 +124,8 @@
     <div class="col-md-1"></div>
     <div class="col-md-2">
           <div class="jumbotron">
-              <h4> 当前Node</h4>
-                  <h3><span class="label label-info" style="width:80%">节点1</span><h3>
+              <h3> 当前Node <span class="label label-info" style="width:100%">节点1</span></h3>
+                <br><br><br><br><br><br><br>
                   <!--<select disabled=true class="form-control " style="width:100%;">
                       <option>1</option>
                       <option>2</option>
@@ -133,8 +133,6 @@
                       <option>4</option>
                       <option>5</option>
                   </select>-->
-              <h4> 添加Block</h4>
-              <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary " style="width:35%">添加</button>
           </div>
         <div class="modal fade "  id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:400px">
@@ -144,11 +142,11 @@
                             &times;
                         </button>
                         <h4 class="modal-title" id="myModalLabel">
-                        添加Block
+                        修改Block
                         </h4>
                     </div>
                     <div class="modal-body" >
-                          <input type="text"  id='blockid' class="form-control" placeholder="Node ID" aria-describedby="basic-addon1">
+                          <input type="text"  id='blockid' disabled=true class="form-control"  aria-describedby="basic-addon1">
                         <p></p>
                           <input type="text"  id='blockmsg' class="form-control" placeholder="Message" aria-describedby="basic-addon1">
                         <p></p>
@@ -158,16 +156,16 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                         </button>
-                        <button type="button" id="addBlock" class="btn btn-primary" >
-                            添加
+                        <button type="button"  data-toggle="modal"  id="updateBlock" class="btn btn-primary" >
+                            修改
                         </button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
     </div>
-    <div class="col-md-6">
-        <table class="table table-hover">
+    <div class="col-md-8">
+        <table class="table table-condensed">
           <caption><h2>Blocks</h2></caption>
           <thead>
             <tr>
@@ -176,14 +174,16 @@
               <th>Cost</th>
               <th>Last Hash</th>
               <th>Update Time</th>
+                <th></th>
             </tr>
             {% for item in blocks %}
               <tr>
-                <th>{{ item.id }}</th>
-                <th>{{ item.msg }}</th>
-                <th>{{ item.cost }}</th>
-                <th>{{ item.hash}} </th>
-                <th>{{ item.time }} </th>
+                  <th id={{item.id}}>{{ item.id }}</th>
+                  <th>{{ item.msg }}</th>
+                  <th>{{ item.cost }}</th>
+                  <th>{{ item.hash}} </th>
+                  <th>{{ item.time }} </th>
+                  <th><button type="button" class='update' data-toggle="modal" data-target="#myModal"  class="btn btn-primary " >修改</button></th>
               </tr>
             {% endfor %}
           </thead>
@@ -196,23 +196,35 @@
   <div class="col-md-1"></div>
 </div>
 <script>
-      $('#addBlock').click(function(){
-          var id=$('#blockid').val()
-          var cost=$('#cost').val()
-          var msg=$('#blockmsg').val()
-          $.ajax({
-                    type: "post",
-                    url: "/addBlock",
-                    data: { "id": id,"cost":cost,"msg":msg},    //参数值
-                    success: function(data){
-                        alert(data)
-                        window.location.reload()
-                    },
-                    error: function(data){
-                        //请求出错处理
-                    }
-            });
+      $('.update').click(function(){
+          var data=$(this).parent().siblings()
+          console.log(data[0].innerText)
+          $('#blockid').val(data[0].innerText)
+          $('#blockmsg').val(data[1].innerText)
+          $('#cost').val(data[2].innerText)
+          $('#hash').val(data[3].innerText)
+          $('#myModal').toggle()
       });
+</script>
+<script>
+    $('#updateBlock').click(function(){
+            id=$('#blockid').val()
+            cost=$('#cost').val()
+            msg=$('#blockmsg').val()
+            hash=$('#hash').val()
+            $.ajax({
+                type: "post",
+                url: "/updateBlock",
+                data: { "id": id,"cost":cost,"msg":msg,"hash":hash},    //参数值
+                success: function(data){
+                    alert(data)
+                    window.location.reload()
+                },
+                error: function(data){
+                    //请求出错处理
+                }
+            });
+        });
 </script>
 </body>
 

@@ -12,74 +12,81 @@
 <script type="text/javascript" src="{{ url_for('static', filename='echarts.min.js') }}"></script>
 <style>
   .navbar-default {
-  background-color: #2053a6;
-  border-color: #5a6ad8;
-}
-.navbar-default .navbar-brand {
-  color: #ecf0f1;
-}
-.navbar-default .navbar-brand:hover,
-.navbar-default .navbar-brand:focus {
-  color: #ecdbff;
-}
-.navbar-default .navbar-text {
-  color: #ecf0f1;
-}
-.navbar-default .navbar-nav > li > a {
-  color: #ecf0f1;
-}
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus {
-  color: #ecdbff;
-}
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:hover,
-.navbar-default .navbar-nav > .active > a:focus {
-  color: #ecdbff;
-  background-color: #5a6ad8;
-}
-.navbar-default .navbar-nav > .open > a,
-.navbar-default .navbar-nav > .open > a:hover,
-.navbar-default .navbar-nav > .open > a:focus {
-  color: #ecdbff;
-  background-color: #5a6ad8;
-}
-.navbar-default .navbar-toggle {
-  border-color: #5a6ad8;
-}
-.navbar-default .navbar-toggle:hover,
-.navbar-default .navbar-toggle:focus {
-  background-color: #5a6ad8;
-}
-.navbar-default .navbar-toggle .icon-bar {
-  background-color: #ecf0f1;
-}
-.navbar-default .navbar-collapse,
-.navbar-default .navbar-form {
-  border-color: #ecf0f1;
-}
-.navbar-default .navbar-link {
-  color: #ecf0f1;
-}
-.navbar-default .navbar-link:hover {
-  color: #ecdbff;
-}
+      background-color: #2053a6;
+      border-color: #5a6ad8;
+    }
+    .navbar-default .navbar-brand {
+      color: #ecf0f1;
+    }
+    .navbar-default .navbar-brand:hover,
+    .navbar-default .navbar-brand:focus {
+      color: #ecdbff;
+    }
+    .navbar-default .navbar-text {
+      color: #ecf0f1;
+    }
+    .navbar-default .navbar-nav > li > a {
+      color: #ecf0f1;
+    }
+    .navbar-default .navbar-nav > li > a:hover,
+    .navbar-default .navbar-nav > li > a:focus {
+      color: #ecdbff;
+    }
+    .navbar-default .navbar-nav > .active > a,
+    .navbar-default .navbar-nav > .active > a:hover,
+    .navbar-default .navbar-nav > .active > a:focus {
+      color: #ecdbff;
+      background-color: #5a6ad8;
+    }
+    .navbar-default .navbar-nav > .open > a,
+    .navbar-default .navbar-nav > .open > a:hover,
+    .navbar-default .navbar-nav > .open > a:focus {
+      color: #ecdbff;
+      background-color: #5a6ad8;
+    }
+    .navbar-default .navbar-toggle {
+      border-color: #5a6ad8;
+    }
+    .navbar-default .navbar-toggle:hover,
+    .navbar-default .navbar-toggle:focus {
+      background-color: #5a6ad8;
+    }
+    .navbar-default .navbar-toggle .icon-bar {
+      background-color: #ecf0f1;
+    }
+    .navbar-default .navbar-collapse,
+    .navbar-default .navbar-form {
+      border-color: #ecf0f1;
+    }
+    .navbar-default .navbar-link {
+      color: #ecf0f1;
+    }
+    .navbar-default .navbar-link:hover {
+      color: #ecdbff;
+    }
 
-@media (max-width: 767px) {
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-    color: #ecf0f1;
-  }
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #ecdbff;
-  }
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #ecdbff;
-    background-color: #5a6ad8;
-  }
-}
+    @media (max-width: 767px) {
+      .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ecf0f1;
+      }
+      .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+      .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #ecdbff;
+      }
+      .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+      .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+      .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #ecdbff;
+        background-color: #5a6ad8;
+      }
+    }
+    .card {
+    background: rgb(238,238,238);
+    border: 1px solid #e7eaf1;
+    border-radius: 2px;
+    box-shadow: 0 1px 5px rgba(235,235,235,.05);
+    box-sizing: border-box;
+    }
 </style>
 <body>
 <div class="row">
@@ -99,18 +106,18 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li ><a href="/block">Block<span class="sr-only">(current)</span></a></li>
+          <li ><a href="/block">Blocks<span class="sr-only">(current)</span></a></li>
           <li class="active"><a href="/status">Status</a></li>
 <!--
           <li><a href="/nodes">Nodes</a></li>
 -->
         </ul>
-        <form class="navbar-form navbar-left">
+        <!--<form class="navbar-form navbar-left">
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Search">
           </div>
           <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+        </form>-->
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#">About us</a></li>
         </ul>
@@ -126,11 +133,9 @@
         <div id="main" style="width: 100%;height:600px;"></div>
     </div>
     <div class="col-md-3">
-        <div class="jumbotron">
-
-
-        <table class="table table-hover">
-          <caption><h2>Status</h2></caption>
+        <div class="card" >
+        <table id="table" class="table table-hover">
+          <caption><h2 style="text-align:center">Status</h2></caption>
           <thead>
             <tr>
                 <th>Node</th>
@@ -138,10 +143,46 @@
                 <th>Status</th>
                 <th>Last Update</th>
             </tr>
-          <tr>
+            <tr>
                 <th>1</th>
                 <th>10</th>
-              <th> <button type="button" class="btn btn-success dropdown-toggle">√</button></th>
+                <th><span class="label label-success">️状态正常</span></th>
+                <th>2017-01-01 20:10</th>
+            </tr>
+            <tr>
+                <th>2</th>
+                <th>10</th>
+                <th><span class="label label-success">️状态正常</span></th>
+                <th>2017-01-01 20:10</th>
+            </tr>
+            <tr>
+                <th>3</th>
+                <th>10</th>
+                <th><span class="label label-success">️状态正常</span></th>
+                <th>2017-01-01 20:10</th>
+            </tr>
+            <tr>
+                <th>4</th>
+                <th>10</th>
+                <th><span class="label label-success">️状态正常</span></th>
+                <th>2017-01-01 20:10</th>
+            </tr>
+            <tr>
+                <th>5</th>
+                <th>10</th>
+                <th><span class="label label-success">️状态正常</span></th>
+                <th>2017-01-01 20:10</th>
+            </tr>
+            <tr>
+                <th>6</th>
+                <th>10</th>
+                <th><span class="label label-success">️状态正常</span></th>
+                <th>2017-01-01 20:10</th>
+            </tr>
+            <tr>
+                <th>6</th>
+                <th>10</th>
+                <th><span class="label label-success">️状态正常</span></th>
                 <th>2017-01-01 20:10</th>
             </tr>
           </thead>
@@ -149,7 +190,8 @@
           </tbody>
         </table>
             <!--<h4> 添加Block</h4>-->
-              <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary " style="width:200px">添加Block</button>
+             <div style="text-align:center"> <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary " style="width:200px ">添加Block</button>
+                 </div>
           </div>
         <div class="modal fade "  id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:400px">
@@ -163,22 +205,24 @@
                         </h4>
                     </div>
                     <div class="modal-body" >
-                          <input type="text"  class="form-control" placeholder="Node ID" aria-describedby="basic-addon1">
+                          <input type="text"  id='blockid' class="form-control" placeholder="Node ID" aria-describedby="basic-addon1">
                         <p></p>
-                          <input type="text"  class="form-control" placeholder="Message" aria-describedby="basic-addon1">
-
+                          <input type="text"  id='blockmsg' class="form-control" placeholder="Message" aria-describedby="basic-addon1">
+                        <p></p>
+                          <input type="text"  id='cost' class="form-control" placeholder="cost" aria-describedby="basic-addon1">
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" id="addBlock" class="btn btn-primary" >
                             添加
                         </button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
-            </div>
+        </div>
+    </div>
   </div>
 
 </div>
@@ -187,127 +231,164 @@
 </div>
 </body>
 <script>
-        var myChart = echarts.init(document.getElementById('main'));
-        // 指定图表的配置项和数据
-        option = {
-            title: {
-                text: 'Graph 简单示例'
-            },
-
-            tooltip: {},
-            animationDurationUpdate: 1500,
-            animationEasingUpdate: 'quinticInOut',
-            series : [
-                {
+    var myChart = echarts.init(document.getElementById('main'));
+    // 指定图表的配置项和数据
+    option = {
+        title: {
+            text: '节点状态'
+        },
+        tooltip: {},
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series : [
+            {
+                itemStyle: {
+                    normal: {
+                        color: "#33ccff",
+                        lineStyle: {
+                            color: "#2ec7c9"
+                        }
+                    }
+                },
+                roam: false,
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 80,
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    normal: {
+                        textStyle: {
+                            fontSize: 20
+                        }
+                    }
+                },
+                data: [{
+                    name: '节点1',
+                    x: 400,
+                    y: 50,
                     itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            lineStyle: {
-                                color: "#2ec7c9"
-                            }
+                    normal: {
+                        color: "#33ccff",
                         }
-                    },
-                    roam: false,
-                    type: 'graph',
-                    layout: 'none',
-                    symbolSize: 80,
-                    label: {
-                        normal: {
-                            show: true
+                    }
+                }, {
+                    name: '节点2',
+                    x: 595,
+                    y: 144,
+                    itemStyle: {
+                    normal: {
+                        color: "#33ccff",
                         }
-                    },
-                    edgeSymbol: ['circle', 'arrow'],
-                    edgeSymbolSize: [4, 10],
-                    edgeLabel: {
-                        normal: {
-                            textStyle: {
-                                fontSize: 20
-                            }
+                    }
+                }, {
+                    name: '节点3',
+                    x: 644,
+                    y: 356,
+                    itemStyle: {
+                    normal: {
+                        color: "#33ccff",
                         }
-                    },
-                    data: [{
-                        name: '节点1',
-                        x: 400,
-                        y: 50,
-                        itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            }
+                    }
+                }, {
+                    name: '节点4',
+                    x: 508,
+                    y: 525,
+                    itemStyle: {
+                    normal: {
+                        color: "#33ccff",
                         }
-                    }, {
-                        name: '节点2',
-                        x: 595,
-                        y: 144,
-                        itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            }
+                    }
+                },{
+                    name: '节点5',
+                    x: 292,
+                    y: 525,
+                    itemStyle: {
+                    normal: {
+                        color: "#33ccff",
                         }
-                    }, {
-                        name: '节点3',
-                        x: 644,
-                        y: 356,
-                        itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            }
+                    }
+                },
+                 {
+                    name: '节点6',
+                    x: 156,
+                    y: 356,
+                    itemStyle: {
+                    normal: {
+                        color: "#33ccff",
                         }
-                    }, {
-                        name: '节点4',
-                        x: 508,
-                        y: 525,
-                        itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            }
+                    }
+                },
+                 {
+                    name: '节点7',
+                    x: 205,
+                    y: 144,
+                    itemStyle: {
+                    normal: {
+                        color: "#33ccff",
                         }
-                    },{
-                        name: '节点5',
-                        x: 292,
-                        y: 525,
-                        itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            }
-                        }
-                    },
-                     {
-                        name: '节点6',
-                        x: 156,
-                        y: 356,
-                        itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            }
-                        }
-                    },
-                     {
-                        name: '节点7',
-                        x: 205,
-                        y: 144,
-                        itemStyle: {
-                        normal: {
-                            color: "#33ccff",
-                            }
-                        }
-                    }],
-                    // links: [],
-                    links:[
-                    ]
+                    }
+                }],
+                // links: [],
+                links:[]
+            }
+        ]
+    };
+    myChart.setOption(option);
+    // 异步加载数据
+    setInterval(function (){
+            nodes=[];
+            $.ajax({
+                type: "post",
+                url: "/getStatus",
+                dataType:"json",
+                data:{},    //参数值
+                success: function(data){
+                    drawPic(data['result'])
+                },
+                error: function(data){
+                    //请求出错处理
                 }
-            ]
-        };
+            });
+        }, 3000);
 
-        myChart.setOption(option);
-        // 异步加载数据
-        var boardcast=function(s){
-            var arr=[0,1,2,3,4,5,6];
-            delete arr[s];
-            links=[];
-            for (var i=0;i<7;i++){
-                var link={
-                    source:s,
-                    target:arr[i],
+    var boardcast=function(s){
+        var arr=[0,1,2,3,4,5,6];
+        delete arr[s];
+        links=[];
+        for (var i=0;i<7;i++){
+            var link={
+                source:s,
+                target:arr[i],
+                symbolSize: [5, 20],
+                label: {
+                    normal: {
+                        show: false
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        width: 5,
+                        curveness: 0.2
+                    }
+                    }
+                }
+            links.push(link)
+        }
+        return links;
+    };
+    var check=function(i,linkcon){
+        for(var j=0;j<7;j++){
+           if (i!=j)
+               {
+               var link={
+                    source:i,
+                    target:j,
                     symbolSize: [5, 20],
                     label: {
                         normal: {
@@ -321,54 +402,51 @@
                         }
                         }
                     }
-                links.push(link)
+                linkcon.push(link);
+               }
+        }
+        return linkcon;
+    };
+    var drawPic=function(nodes){
+        linkcon=[]
+        for(var i=0;i<7;i++){
+            if (nodes[i].charAt(0)=="0")
+                continue;
+            else{
+                check(i,linkcon);
             }
-            return links;
-        };
-        var check=function(){
-            links=[]
-            for(var i=0;i<7;i++){
-                for(var j=0;j<7;j++){
-                   if (i!=j)
-                       {
-                       var link={
-                            source:i,
-                            target:j,
-                            symbolSize: [5, 20],
-                            label: {
-                                normal: {
-                                    show: false
-                                }
-                            },
-                            lineStyle: {
-                                normal: {
-                                    width: 5,
-                                    curveness: 0.2
-                                }
-                                }
-                            }
-
-                        links.push(link);
-                       }
-
+        }
+        option.series[0].links=linkcon;
+        for(var i=0;i<7;i++){
+            if (nodes[i].charAt(1)=="0"){
+                option.series[0].data[i].itemStyle.normal.color="#33ccff"
+                $($("#table").find("tr")[i+1].children[2].children[0]).removeClass().addClass("label label-success").text("️状态正常")
                 }
+            else{
+                $($("#table").find("tr")[i+1].children[2].children[0]).removeClass().addClass("label label-danger").text("状态异常")
+                option.series[0].data[i].itemStyle.normal.color="#FF3030"
             }
-            return links;
-        };
-        var warning=function(){
-            var s=Math.round(Math.random()*10%7);
-            option.series[0].data[s].itemStyle.normal.color="#FF3030"
-            myChart.setOption(option);
-            option.series[0].data[s].itemStyle.normal.color="#33ccff"
-
-        };
-        setInterval(function (){
-                var s=Math.round(Math.random()*10%7);
-                option.series[0].links=check();
-                myChart.setOption(option);
-                if(1){
-                    warning()
-                    };
-            }, 1500);
+        }
+        myChart.setOption(option);
+    }
+</script>
+<script>
+      $('#addBlock').click(function(){
+          var id=$('#blockid').val()
+          var cost=$('#cost').val()
+          var msg=$('#blockmsg').val()
+          $.ajax({
+                    type: "post",
+                    url: "/addBlock",
+                    data: { "id": id,"cost":cost,"msg":msg},    //参数值
+                    success: function(data){
+                        alert(data)
+                        window.location.reload()
+                    },
+                    error: function(data){
+                        //请求出错处理
+                    }
+            });
+      });
 </script>
 </html>

@@ -17,7 +17,7 @@ class Process(object):
     def waitData(self):
         server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server.bind(('',self.address[1]))
+        server.bind(self.address)
         server.listen(8)
         while True:
             conn, addr = server.accept()
@@ -29,7 +29,7 @@ class Process(object):
                     break
                 else:
                     print data
-                    datas = data.split('#')
+                    datas = data.split(',')
                     if datas[1] == 'client':
                         # 接收到数据之后，首先广播到其它各个节点中去，然后进行相关的处理
                         # 此处为广播到其它节点的代码
@@ -60,8 +60,8 @@ class Process(object):
     #hashval表示哈希值
     #cost表示费用
     def broadCast(self,address,data):
-        datas = data.split('#')
-        tmp = datas[0] + '#broadcast'
+        datas = data.split(',')
+        tmp = datas[0] + ',broadcast'
         client = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         client.connect(address)
         client.send(tmp)
@@ -74,7 +74,7 @@ class Process(object):
         print "Load to database ..."
 
 if __name__ == '__main__':
-    ips = ['192.168.43.235', 'localhost']
+    ips = ['10.39.192.39','10.39.184.40']
     ports = [8001, 8002, 8003, 8004]
     #七个进程的位置
     address1 = (ips[0], ports[0])
@@ -86,4 +86,4 @@ if __name__ == '__main__':
     address7 = (ips[1], ports[3])
     addresses = [address1,address2,address3,address4,address5,address6,address7]
 
-    p1 = Process(address7,addresses)
+    p1 = Process(address1,addresses)

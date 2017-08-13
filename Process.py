@@ -236,9 +236,9 @@ if __name__ == '__main__':
     address1 = (ips[1], ports[0])
     address2 = (ips[1], ports[1])
     address3 = (ips[1], ports[2])
-    address4 = (ips[1], ports[4])
-    address5 = (ips[0], ports[0])
-    address6 = (ips[0], ports[1])
-    address7 = (ips[0], ports[2])
-    addresses = [address1, address2, address3,address4,address5,address6,address7]
-    p = Process(address4, addresses)
+    #address4 = (ips[1], ports[3])
+    #address5 = (ips[0], ports[0])
+    #address6 = (ips[0], ports[1])
+    #address7 = (ips[0], ports[2])
+    addresses = [address1, address2, address3]
+    p = Process(address1, addresses)
